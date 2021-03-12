@@ -49,24 +49,24 @@ smooth(x) = fi.pole(pole, x * (1.0 - pole))
 
 // GUI parameters
 x_level(x) = attach(x , abs(x) : ba.linear2db : 
-    levels_group(hbargraph("[5]x[style:dB]", -60, 0)));
+    levels_group(hbargraph("[0]x[style:dB]", -60, 0)));
 y_level(x) = attach(x , abs(x) : ba.linear2db : 
-    levels_group(hbargraph("[6]y[style:dB]", -60, 0)));
+    levels_group(hbargraph("[1]y[style:dB]", -60, 0)));
 z_level(x) = attach(x , abs(x) : ba.linear2db : 
-    levels_group(hbargraph("[7]z[style:dB]", -60, 0)));
-global_group(x) = vgroup("[1]Global", x);
-levels_group(x) = hgroup("[5]Levels (dB)", x);
-b = global_group(hslider("[2]b", 3, -20, 20, .000001) : smooth);  
+    levels_group(hbargraph("[2]z[style:dB]", -60, 0)));
+global_group(x) = vgroup("[0]Global", x);
+levels_group(x) = hgroup("[1]Levels (dB)", x);
+b = global_group(hslider("[4]b[scale:exp]", 3, 0, 20, .000001) : smooth);  
 dt = global_group(
-    hslider("[9]dt (time delta)[scale:exp]", 0.1, 0.000001, 1, .000001) : 
+    hslider("[5]dt (time delta)[scale:exp]", 0.1, 0.000001, 1, .000001) : 
         smooth);
 input(x) = global_group(nentry("[3]Input value", 1, 0, 10, .000001) <: 
     _ * impulse + _ * checkbox("[1]Constant inputs") + 
         x * checkbox("[0]External inputs"));
-impulse = checkbox("[2]Impulse inputs") <: _ - _' : abs;
+impulse = button("[2]Impulse inputs") : ba.impulsify;
 limit = global_group(
-    hslider("[9]Saturation limit[scale:exp]", 4, 1, 1024, .000001) : smooth);
-out = global_group(hslider("[9]Output scaling[scale:exp]", 0, 0, 1, .000001) : 
+    hslider("[6]Saturation limit[scale:exp]", 4, 1, 1024, .000001) : smooth);
+out = global_group(hslider("[7]Output scaling[scale:exp]", 0, 0, 1, .000001) : 
     smooth);
 
 process(x1, x2, x3) = thomas(limit, b, dt, input(x1), input(x2), 
